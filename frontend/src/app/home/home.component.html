@@ -1,0 +1,65 @@
+
+<div class="navbar">
+    <h1>URL Shortener</h1>
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <button (click)="setActiveSection('profile')">Profile</button>
+        <button (click)="setActiveSection('shorten')">Shorten</button>
+        <button (click)="setActiveSection('statistics')">Statistics</button>
+    </div>
+
+    <div class="content" [ngSwitch]="activeSection">
+        <div *ngSwitchCase="'profile'">
+            <h2 *ngIf="loggedInUser">Welcome, {{ loggedInUser }}!</h2>
+            <button class="logout-button" (click)="logout()">Logout</button>
+        </div>
+        <div *ngSwitchCase="'shorten'">
+            <form (ngSubmit)="onSubmit()">
+                <label for="shortURL">URL:</label>
+                <input type="text" id="shortURL" [(ngModel)]="shortURL" name="shortURL" required>
+                <button type="submit">Shorten</button>
+            </form>
+
+            <div *ngIf="shortenedDetails" class="shortened-details">
+                <p class="success-message">Shortened URL: <a href="{{ shortenedDetails.short_url }}" target="_blank">{{
+                        shortenedDetails.short_url }}</a></p>
+                <p class="expires-message">Expires at: {{ shortenedDetails.expires_at }}</p>
+            </div>
+
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+
+        </div>
+        <div *ngSwitchCase="'statistics'">
+            <div *ngSwitchCase="'statistics'">
+                <table *ngIf="analyticsData.length > 0" class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>Short URL</th>
+                            <th>Original URL</th>
+                            <th>Click Count</th>
+                            <th>Created At</th>
+                            <th>Expires At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of analyticsData">
+                            <td><a href="{{ data.short_url }}" target="_blank">{{ data.short_url }}</a></td>
+                            <td>{{ data.original_url }}</td>
+                            <td>{{ data.click_count }}</td>
+                            <td>{{ data.created_at }}</td>
+                            <td>{{ data.expires_at }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div *ngIf="analyticsData.length === 0" class="no-data-message">
+                    No analytics data available.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
